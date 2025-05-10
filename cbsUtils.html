@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CBS Scale Demo</title>
+		<link rel="stylesheet" href="cbsUtils.css" />
+		<style>
+			.theme-toggle {
+				display: flex;
+				gap: 1rem;
+				margin-bottom: 2rem;
+			}
+			.theme-toggle button {
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body class="cbs-container cbs-scale-context">
+		<div class="theme-toggle">
+			<button
+				onclick="document.documentElement.setAttribute('data-theme', 'light')"
+			>
+				Light
+			</button>
+			<button
+				onclick="document.documentElement.setAttribute('data-theme', 'dark')"
+			>
+				Dark
+			</button>
+			<button
+				onclick="document.documentElement.setAttribute('data-theme', 'neon')"
+			>
+				Neon
+			</button>
+			<button
+				onclick="document.documentElement.setAttribute('data-theme', 'retro')"
+			>
+				Retro
+			</button>
+		</div>
+
+		<h1 class="cbs-text-4xl cbs-mb-md">CBS Scale Framework</h1>
+		<p class="cbs-text-base cbs-mb-lg">
+			Responsive font scaling using CSS variables and rem units. Try
+			switching themes!
+		</p>
+
+		<div class="cbs-card cbs-mb-lg">
+			<h2 class="cbs-text-xl cbs-mb-sm">Component Example: Card</h2>
+			<p class="cbs-text-base">
+				This card is styled with your scalable utility classes and
+				adapts to themes and screen size.
+			</p>
+		</div>
+
+		<button class="cbs-button">Themed Button</button>
+	</body>
+</html>

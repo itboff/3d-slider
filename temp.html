@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Perspective Font Scaling (Fixed)</title>
+  <style>
+    :root {
+      --perspective: 600px;       /* The current perspective */
+      --basePerspective: 1000;     /* The "default" perspective */
+      --scaleFactor: calc((var(--perspective) / 1px) / var(--basePerspective));
+    }
+
+    body {
+      font-size: 16px;
+      font-family: sans-serif;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: calc(5rem * var(--scaleFactor));
+      color: #222;
+    }
+
+    p {
+      font-size: calc(1rem * var(--scaleFactor));
+      color: #555;
+    }
+
+    .demo-container {
+      perspective: var(--perspective);
+      padding: 2rem;
+      border: 1px dashed #aaa;
+    }
+
+    .info {
+      font-size: 0.9rem;
+      margin-top: 2rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-container">
+    <h1>Scaled by Perspective</h1>
+    <p>This text size is scaled based on the perspective value.</p>
+  </div>
+
+  <div class="info">
+    Try changing <code>--perspective</code> in <code>:root</code>!<br>
+    Current scale factor: <code>calc((--perspective / 1px) / --basePerspective)</code>
+  </div>
+
+</body>
+</html>

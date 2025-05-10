@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Cube Slider</title>
+	</head>
+
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+		}
+		:root {
+			--cbsPerspective: 1000px; /* Set Perspective for Animation */
+			--cbsSpeed: 40s; /* Default Speed to Rotate */
+			--cbsCardWidth: 250px; /* Set width for the Slider Cards and Stacked on top of each other */
+			--cbsCardHeight: 200px; /* Set width for the Slider Cards and Stacked on top of each other */
+			--cbs-bd-rad: 1rem; /* Set Default Border Radius for Items */
+		}
+
+		.cbs-banner {
+			width: 100%;
+			height: 500px;
+			text-align: center;
+			/* overflow: hidden; */
+			position: relative;
+			transform: perspective(var(--cbsPerspective));
+			border: 1px black double;
+		}
+
+		.cbs-banner .cbs-slider {
+			position: absolute;
+			width: var(--cbsCardWidth);
+			height: var(--cbsCardHeight);
+			top: 10%;
+			left: calc(50% - 100px);
+			transform-style: preserve-3d;
+			animation: cbsRotateSlider var(--cbsSpeed) linear infinite;
+			pointer-events: auto;
+			border: 1px red solid;
+			border-radius: var(--cbs-bd-rad);
+			z-index: 2;
+		}
+
+		.cbs-banner .cbs-slider:hover {
+			animation-play-state: paused;
+		}
+
+		@keyframes cbsRotateSlider {
+			from {
+				transform: perspective(var(--cbsPerspective)) rotateX(-16deg)
+					rotateY(0deg);
+				/* Optional Add in an Angle to rotate the X Axis */
+				/* transform: perspective(1000px) rotateX(0deg) rotateY(0deg); */
+			}
+
+			to {
+				transform: perspective(var(--cbsPerspective)) rotateX(-16deg)
+					rotateY(360deg);
+				/* Optional Add in an Angle to rotate the X Axis */
+				/* transform: perspective(2000px) rotateX(360deg) rotateY(360deg); */
+			}
+		}
+
+		.cbs-banner .cbs-slider .cbs-item {
+			position: absolute;
+			border: 1px solid gold;
+			border-radius: var(--cbs-bd-rad);
+			pointer-events: auto;
+			inset: 0 0 0 0;
+			/* width: 100%; */
+			/* height: 100%; */
+			transform-style: preserve-3d;
+			transform: rotateY(
+					calc(
+						(var(--cbsPosition) - 1) * (360 / var(--cbsQty)) * 1deg
+					)
+				)
+				translateZ(calc(var(--cbsPerspective) / 2));
+		}
+
+		.cbs-banner .cbs-slider .cbs-item:before {
+			content: attr(cbs-item-title);
+			position: absolute;
+			/* top: 50%; */
+			/* left: 50%; */
+			/* transform: translateX(-50%) translateY(-50%) translateZ(10px); */
+			color: black;
+			background: rgba(255, 255, 255, 0.7);
+			padding: 10px;
+			width: max-content;
+			white-space: nowrap;
+			font-size: 18px;
+			border: 1px solid orange;
+			box-shadow: 0 0 20px gold;
+			border-radius: var(--cbs-bd-rad);
+			animation: cbsPulseHead 2s ease-in-out infinite;
+		}
+
+		@keyframes cbsPulseHead {
+			0% {
+				transform: translateZ(10px);
+			}
+			50% {
+				transform: translateZ(20px);
+			}
+			100% {
+				transform: translateZ(10px);
+			}
+		}
+
+		.cbs-banner .cbs-slider .cbs-item::after {
+			content: attr(cbs-item-desc);
+			position: absolute;
+			/* width: 100%; */
+			/* height: 100%; */
+			bottom: 0;
+			right: 0;
+			display: block; /* or inline-block if needed */
+			white-space: normal; /* allows wrapping */
+			word-wrap: break-word; /* breaks long words if needed */
+			overflow-wrap: break-word; /* modern alternative */
+			color: black;
+			background: rgba(255, 255, 255, 0.7);
+			/* background-image: url(../cube-3d/back.jpg); */
+			padding: 10px;
+			font-size: 1.5rem;
+			border: 1px solid orange;
+			box-shadow: 0 0 20px gold;
+			border-radius: var(--cbs-bd-rad);
+			transform: translateZ(-25px);
+			animation: cbsPulseDesc 20s ease-in-out infinite;
+			box-sizing: border-box;
+		}
+
+		@keyframes cbsPulseDesc {
+			0% {
+				transform: translateZ(-25px) rotateY(180deg);
+			}
+			50% {
+				transform: translateZ(-200px) rotateY(180deg) scale(0.5);
+			}
+			100% {
+				transform: translateZ(-25px) rotateY(180deg);
+			}
+		}
+
+		.cbs-banner .cbs-slider .cbs-item img {
+			width: 100%;
+			height: 100%;
+			border-radius: var(--cbs-bd-rad);
+			object-fit: cover;
+		}
+
+		.cbs-banner .cbs-slider .cbs-item:hover {
+			/* transform: rotateX(45deg) scale(0.5); */
+			opacity: 0;
+		}
+
+		.cbs-banner .cbs-heading {
+			position: absolute;
+			/* bottom: 0px; */
+			left: 50%;
+			top: 15%;
+			transform: translateX(-50%) translateY(-50%);
+			/* width: min(1400px, 100vw); */
+			height: max-content;
+
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			flex-wrap: wrap;
+			flex-direction: column;
+			border: 3px dotted purple;
+			/* background: red; */
+			z-index: 3;
+		}
+
+		.cbs-banner .cbs-heading h2 {
+			top: 0px;
+			font-size: 4em;
+			line-height: 1em;
+			color: black;
+			position: relative;
+			top: 0px;
+			/* z-index: 2000 !important; */
+		}
+
+		.cbs-banner .cbs-heading h2::after {
+			position: absolute;
+			inset: 0 0 0 0;
+			content: attr(cbs-item-title);
+			z-index: 100;
+			-webkit-text-stroke: 2px red;
+			color: pur;
+		}
+		.cbs-banner .cbs-headingInner {
+			/* text-align: right; */
+			max-width: 200px;
+			position: relative;
+			z-index: 10;
+		}
+		.cbs-banner .cbs-heading h3 {
+			font-size: 3em;
+		}
+		.cbs-banner .cbs-heading .cbs-mainImage {
+			/* background-image: url(../test.png); */
+			width: 50%;
+			height: 50%;
+
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translateX(-50%) translateY(-50%);
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-position: left center;
+			z-index: 1;
+			/* border: 2px purple solid; */
+		}
+
+		.cbs-model-viewer {
+			position: relative;
+			/* top: -10px; */
+			/* right: -200px; */
+			z-index: 3;
+			width: 100%;
+			height: 100%;
+			border: 1px rgb(47, 0, 255) solid;
+			/* background-color: rgb(105, 105, 116); */
+		}
+
+		.cbs-banner .cbs-trike3D {
+			position: absolute;
+			border: 5px green;
+			/* background-color: blue; */
+			left: 50%;
+			top: 50%;
+			transform: translateX(-50%) translateY(-50%);
+			width: 50%;
+			height: 100%;
+			z-index: 1;
+		}
+	</style>
+	<body>
+		<div class="cbs-banner">
+			<div class="cbs-slider" style="--cbsQty: 10">
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 1"
+					cbs-item-title="Eira do Serrado Viewpoint"
+					cbs-item-desc="Eira do Serrado Viewpoint"
+				>
+					<img src="../cube-3d/top.jpg" alt="Image 1" />
+				</div>
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 2"
+					cbs-item-title="Nuns Valley Scenic"
+					cbs-item-desc="Nuns Valley (Curral das Freiras)"
+				>
+					<img src="../cube-3d/bottom.jpg" alt="Image 1" />
+				</div>
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 3"
+					cbs-item-title="Tour 3"
+					cbs-item-desc="Description of Tour"
+				>
+					<img src="../cube-3d/left.jpg" alt="Image 1" />
+				</div>
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 4"
+					cbs-item-title="Tour 4"
+					cbs-item-desc="Description of Tour"
+				>
+					<img src="../cube-3d/right.jpg" alt="Image 1" />
+				</div>
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 5"
+					cbs-item-title="Tour 5"
+					cbs-item-desc="Description of Tour"
+				>
+					<img src="../cube-3d/back.jpg" alt="Image 1" />
+				</div>
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 6"
+					cbs-item-title="Tour 6"
+					cbs-item-desc="Description of Tour"
+				>
+					<img src="../cube-3d/front.jpg" alt="Image 1" />
+				</div>
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 7"
+					cbs-item-title="Tour 7"
+					cbs-item-desc="Description of Tour"
+				>
+					<img src="../cube-3d/right.jpg" alt="Image 1" />
+				</div>
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 8"
+					cbs-item-title="Tour 8"
+					cbs-item-desc="Description of Tour"
+				>
+					<img src="../cube-3d/right.jpg" alt="Image 1" />
+				</div>
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 9"
+					cbs-item-title="Tour 9"
+					cbs-item-desc="Description of Tour"
+				>
+					<img src="../cube-3d/right.jpg" alt="Image 1" />
+				</div>
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 10"
+					cbs-item-title="Tour 10"
+					cbs-item-desc="Description of Tour"
+				>
+					<img src="../cube-3d/right.jpg" alt="Image 1" />
+				</div>
+			</div>
+			<div class="cbs-heading">
+				<h2 cbs-item-title="Nuns Valley Tours">Nuns Valley Tours</h2>
+
+				<div class="cbs-mainImage"></div>
+			</div>
+			<div class="cbs-headingInner">
+				<h3>Tour Selection</h3>
+				<p><b>Selection of Tours</b></p>
+				<p>Check out our selection of Tours below...</p>
+			</div>
+			<div class="cbs-trike3D">
+				<script
+					type="module"
+					src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
+				></script>
+
+				<model-viewer
+					src="/cube-3d/red-trike.glb"
+					alt="A 3D model"
+					auto-rotate
+					loading="lazy"
+					class="cbs-model-viewer"
+				></model-viewer>
+			</div>
+		</div>
+	</body>
+</html>

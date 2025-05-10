@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Modern Callouts</title>
+		<style>
+			body {
+				background: #f0f2f5;
+				font-family: "Segoe UI", sans-serif;
+				padding: 2rem;
+				display: grid;
+				gap: 2rem;
+				place-items: center;
+			}
+
+			/* 1. Glassmorphism Callout */
+			.callout-glass {
+				background: rgba(255, 255, 255, 0.15);
+        -webkit-backdrop-filter: blur(12px);
+				backdrop-filter: blur(12px);
+				border: 1px solid rgba(255, 255, 255, 0.3);
+				padding: 2rem;
+				border-radius: 20px;
+				box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+				width: 90%;
+				max-width: 400px;
+				color: #fff;
+			}
+
+			/* 2. Floating Card Callout */
+			.callout-card {
+				background: #fff;
+				padding: 2rem;
+				border-radius: 16px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1),
+					0 2px 4px rgba(0, 0, 0, 0.06);
+				width: 90%;
+				max-width: 400px;
+				color: #333;
+			}
+
+			/* 3. Color-Coded Alert Callouts */
+			.callout-info,
+			.callout-success,
+			.callout-warning,
+			.callout-error {
+				padding: 1.5rem;
+				border-left: 4px solid;
+				border-radius: 10px;
+				width: 90%;
+				max-width: 400px;
+				background: #fff;
+				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+			}
+
+			.callout-info {
+				border-color: #2196f3;
+				background: #e8f4fd;
+			}
+
+			.callout-success {
+				border-color: #4caf50;
+				background: #edf7ed;
+			}
+
+			.callout-warning {
+				border-color: #ff9800;
+				background: #fff4e5;
+			}
+
+			.callout-error {
+				border-color: #f44336;
+				background: #fdecea;
+			}
+
+			/* 4. Clip-Path Callout with Arrow */
+			.callout-arrow {
+				background: #ffffff;
+				padding: 2rem;
+				width: 90%;
+				max-width: 400px;
+				clip-path: polygon(
+					10% 0%,
+					90% 0%,
+					100% 10%,
+					100% 85%,
+					55% 85%,
+					50% 95%,
+					45% 85%,
+					0% 85%,
+					0% 10%
+				);
+				border: 2px solid #3498db;
+				border-radius: 20px;
+				box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+				color: #333;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="callout-glass">
+			✨ <strong>Glassmorphism Callout:</strong> Elegant, blurred,
+			semi-transparent.
+		</div>
+
+		<div class="callout-card">
+			📦 <strong>Floating Card Callout:</strong> Raised with a soft
+			shadow.
+		</div>
+
+		<div class="callout-info">
+			ℹ️ <strong>Info Callout:</strong> Light blue background for neutral
+			information.
+		</div>
+
+		<div class="callout-success">
+			✅ <strong>Success Callout:</strong> Green background for success
+			messages.
+		</div>
+
+		<div class="callout-warning">
+			⚠️ <strong>Warning Callout:</strong> Orange background for warnings.
+		</div>
+
+		<div class="callout-error">
+			❌ <strong>Error Callout:</strong> Red background for errors and
+			failures.
+		</div>
+
+		<div class="callout-arrow">
+			🗨️ <strong>Clip-Path Callout:</strong> Speech bubble with an arrow
+			at the bottom.
+		</div>
+	</body>
+</html>

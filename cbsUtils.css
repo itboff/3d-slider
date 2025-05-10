@@ -1,0 +1,728 @@
+/*
+  CBS Scale Framework v1.3
+  Author: ITBoff (Claude Glenane) + ChatGPT
+  Description: Scalable, perspective-driven utility classes with rem-based typography and layout, dark mode support, manual theme toggles, custom components, and baseline utility resets.
+*/
+
+*,
+*::before,
+*::after {
+	box-sizing: inherit;
+}
+
+html {
+	box-sizing: border-box;
+	font: inherit;
+}
+:root {
+	--cbsMasterScale: 2000;
+	--cbsScale: var(--cbsMasterScale);
+	--cbsScaleBaseline: 2000;
+	--cbsScaleFactor: calc(var(--cbsScale) / var(--cbsScaleBaseline));
+	--cbsPerspective: calc(var(--cbsScale) * 1px);
+	--cbsTxtChar: 75ch;
+
+	/* Dark Theme Defaults */
+	--cbs-bg: rgb(17, 17, 17);
+	--cbs-text: rgb(238, 238, 238);
+	--cbs-primary: rgb(172, 8, 5);
+	--cbs-accent: rgb(141, 219, 243);
+	--cbs-highlight: rgb(255, 215, 0);
+
+	/* Font Family */
+	/* --cbs-font: "Segoe UI", sans-serif; */
+	--cbs-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+	/* Sizes */
+	--cbs-size-xs: 0.5rem;
+	--cbs-size-sm: 0.75rem;
+	--cbs-size-base: 1.4rem;
+	--cbs-size-md: 1.25rem;
+	--cbs-size-lg: 2.4rem;
+	--cbs-size-xl: 3rem;
+	--cbs-size-2xl: 2.5rem;
+	--cbs-size-3xl: 5rem;
+	--cbs-size-4xl: 6rem;
+	--cbs-size-5xl: clamp(2rem, 10vw, 7rem);
+	--cbs-max-lines: 8;
+
+	/* Font WEIGHT */
+	--cbs-weight: 700;
+
+	/* Animations */
+	--cbs-animation-state: paused; /* Default State for Animations */
+}
+
+/* START <--- CSS RESET ---> */
+
+.cbs-section {
+	container-type: inline-size;
+	width: 100%;
+	font-family: var(--cbs-font);
+	background-color: var(--cbs-bg);
+	color: var(--cbs-text);
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+
+.cbs-section p,
+ul,
+li {
+	max-width: var(--cbsTxtChar);
+	text-wrap: pretty;
+}
+
+.cbs-section h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+text {
+	margin: 0;
+	padding: 0;
+	color: var(--cbs-text);
+	font-family: var(--cbs-font);
+	font-weight: var(--cbs-weight);
+}
+
+.section * a {
+	background-color: var(--cbs-primary);
+	box-shadow: 0 0 5px var(--cbs-text);
+	color: var(--cbs-text);
+	padding: calc(var(--cbs-size-xs) * var(--cbsScaleFactor));
+	border: none;
+	border-radius: calc(var(--cbs-size-xs) * var(--cbsScaleFactor));
+	cursor: pointer;
+	font-family: var(--cbs-font);
+	font-weight: 700;
+	text-decoration: none;
+	width: max-content;
+}
+.section * a:hover {
+	background-color: var(--cbs-bg);
+	border: 1px solid var(--cbs-highlight);
+}
+
+.section * img,
+picture,
+svg,
+video {
+	display: block;
+	max-width: 100%;
+}
+
+.cbs-btn-reset {
+	all: unset;
+	display: inline-block; /* or block/flex, depending on layout */
+	cursor: pointer;
+}
+
+html {
+	color-scheme: dark light;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	:has(:target) {
+		scroll-behavior: smooth;
+		scroll-padding: var(--cbs-size-sm);
+	}
+}
+
+/* END <--- CSS RESET ---> */
+
+[data-theme="light"] {
+	--cbs-bg: rgb(238, 238, 238);
+	--cbs-text: rgb(17, 17, 17);
+	--cbs-primary: rgb(51, 147, 211);
+	--cbs-accent: rgb(141, 219, 243);
+	--cbs-highlight: rgb(255, 0, 0);
+}
+
+[data-theme="dark"] {
+	--cbs-bg: rgb(17, 17, 17);
+	--cbs-text: rgb(238, 238, 238);
+	--cbs-primary: rgb(172, 8, 5);
+	--cbs-accent: rgb(141, 219, 243);
+	--cbs-highlight: rgb(255, 215, 0);
+}
+
+[data-theme="neon"] {
+	--cbs-bg: rgb(0, 0, 0);
+	--cbs-text: rgb(57, 255, 20);
+	--cbs-primary: rgb(255, 0, 255);
+	--cbs-accent: rgb(92, 218, 240);
+	--cbs-highlight: rgb(255, 215, 0);
+}
+
+[data-theme="retro"] {
+	--cbs-bg: rgb(254, 244, 220);
+	--cbs-text: rgb(92, 51, 23);
+	--cbs-primary: rgb(255, 102, 0);
+	--cbs-accent: rgb(141, 219, 243);
+	--cbs-highlight: rgb(255, 215, 0);
+}
+
+[data-state="stop"] {
+	--cbs-animation-state: paused;
+}
+[data-state="start"] {
+	--cbs-animation-state: running;
+}
+
+/* Scale Context */
+.cbs-scale-context {
+	--cbsScale: var(--cbsMasterScale);
+}
+
+/* Perspective Wrapper */
+.cbs-perspective {
+	perspective: var(--cbsPerspective);
+}
+
+/* Typography Utilities */
+.cbs-text-xs {
+	font-size: calc(var(--cbs-size-xs) * var(--cbsScaleFactor));
+}
+.cbs-text-sm {
+	font-size: calc(var(--cbs-size-sm) * var(--cbsScaleFactor));
+}
+.cbs-text-base {
+	font-size: calc(var(--cbs-size-base) * var(--cbsScaleFactor));
+}
+.cbs-text-md {
+	font-size: calc(var(--cbs-size-md) * var(--cbsScaleFactor));
+}
+.cbs-text-lg {
+	font-size: calc(var(--cbs-size-lg) * var(--cbsScaleFactor));
+}
+.cbs-text-xl {
+	font-size: calc(var(--cbs-size-xl) * var(--cbsScaleFactor));
+}
+.cbs-text-2xl {
+	font-size: calc(var(--cbs-size-2xl) * var(--cbsScaleFactor));
+}
+.cbs-text-3xl {
+	font-size: calc(var(--cbs-size-3xl) * var(--cbsScaleFactor));
+}
+.cbs-text-4xl {
+	font-size: calc(var(--cbs-size-4xl) * var(--cbsScaleFactor));
+}
+.cbs-text-5xl {
+	font-size: calc(var(--cbs-size-5xl) * var(--cbsScaleFactor));
+}
+
+/* Gap Utilities */
+.cbs-gap-none {
+	gap: 0;
+}
+.cbs-gap-xs {
+	gap: calc(var(--cbs-size-xs) * var(--cbsScaleFactor));
+}
+
+.cbs-gap-sm {
+	gap: calc(var(--cbs-size-sm) * var(--cbsScaleFactor));
+}
+
+.cbs-gap-base {
+	gap: calc(var(--cbs-size-base) * var(--cbsScaleFactor));
+}
+
+.cbs-gap-md {
+	gap: calc(var(--cbs-size-md) * var(--cbsScaleFactor));
+}
+.cbs-gap-lg {
+	gap: calc(var(--cbs-size-lg) * var(--cbsScaleFactor));
+}
+
+.cbs-gap-xl {
+	gap: calc(var(--cbs-size-xl) * var(--cbsScaleFactor));
+}
+
+.cbs-gap-2xl {
+	gap: calc(var(--cbs-size-2xl) * var(--cbsScaleFactor));
+}
+.cbs-gap-3xl {
+	gap: calc(var(--cbs-size-3xl) * var(--cbsScaleFactor));
+}
+.cbs-gap-4xl {
+	gap: calc(var(--cbs-size-4xl) * var(--cbsScaleFactor));
+}
+
+/* Padding Utilities */
+.cbs-pad-none {
+	padding: 0 0;
+}
+
+.cbs-pad-xs {
+	padding: calc(var(--cbs-size-xs) * var(--cbsScaleFactor))
+		calc(var(--cbs-size-xs) * var(--cbsScaleFactor));
+}
+.cbs-pad-sm {
+	padding: calc(var(--cbs-size-sm) * var(--cbsScaleFactor))
+		calc(var(--cbs-size-sm) * var(--cbsScaleFactor));
+}
+.cbs-pad-base {
+	padding: calc(var(--cbs-size-base) * var(--cbsScaleFactor))
+		calc(var(--cbs-size-base) * var(--cbsScaleFactor));
+}
+.cbs-pad-md {
+	padding: calc(var(--cbs-size-md) * var(--cbsScaleFactor))
+		calc(var(--cbs-size-md) * var(--cbsScaleFactor));
+}
+.cbs-pad-lg {
+	padding: calc(var(--cbs-size-lg) * var(--cbsScaleFactor))
+		calc(var(--cbs-size-lg) * var(--cbsScaleFactor));
+}
+.cbs-pad-xl {
+	padding: calc(var(--cbs-size-xl) * var(--cbsScaleFactor))
+		calc(var(--cbs-size-xl) * var(--cbsScaleFactor));
+}
+.cbs-pad-2xl {
+	padding: calc(var(--cbs-size-2xl) * var(--cbsScaleFactor))
+		calc(var(--cbs-size-2xl) * var(--cbsScaleFactor));
+}
+.cbs-pad-3xl {
+	padding: calc(var(--cbs-size-3xl) * var(--cbsScaleFactor))
+		calc(var(--cbs-size-3xl) * var(--cbsScaleFactor));
+}
+.cbs-pad-4xl {
+	padding: calc(var(--cbs-size-4xl) * var(--cbsScaleFactor))
+		calc(var(--cbs-size-4xl) * var(--cbsScaleFactor));
+}
+
+/* Margin Utilities */
+.cbs-mg-none {
+	margin: 0;
+}
+.cbs-mg-xs {
+	margin: calc(var(--cbs-size-xs) * var(--cbsScaleFactor));
+}
+
+.cbs-mg-sm {
+	margin: calc(var(--cbs-size-sm) * var(--cbsScaleFactor));
+}
+
+.cbs-mg-base {
+	margin: calc(var(--cbs-size-base) * var(--cbsScaleFactor));
+}
+
+.cbs-mg-md {
+	margin: calc(var(--cbs-size-md) * var(--cbsScaleFactor));
+}
+
+.cbs-mg-lg {
+	margin: calc(var(--cbs-size-lg) * var(--cbsScaleFactor));
+}
+
+.cbs-mg-xl {
+	margin: calc(var(--cbs-size-xl) * var(--cbsScaleFactor));
+}
+
+.cbs-mg-2xl {
+	margin: calc(var(--cbs-size-2xl) * var(--cbsScaleFactor));
+}
+
+.cbs-mg-3xl {
+	margin: calc(var(--cbs-size-3xl) * var(--cbsScaleFactor));
+}
+
+.cbs-mg-4xl {
+	margin: calc(var(--cbs-size-4xl) * var(--cbsScaleFactor));
+}
+
+/* Radius Utilities */
+.cbs-rad-none {
+	border-radius: 0;
+}
+.cbs-rad-xs {
+	border-radius: calc(var(--cbs-size-xs) * var(--cbsScaleFactor));
+}
+
+.cbs-rad-sm {
+	border-radius: calc(var(--cbs-size-sm) * var(--cbsScaleFactor));
+}
+
+.cbs-rad-base {
+	border-radius: calc(var(--cbs-size-base) * var(--cbsScaleFactor));
+}
+
+.cbs-rad-md {
+	border-radius: calc(var(--cbs-size-md) * var(--cbsScaleFactor));
+}
+
+.cbs-rad-lg {
+	border-radius: calc(var(--cbs-size-lg) * var(--cbsScaleFactor));
+}
+
+.cbs-rad-xl {
+	border-radius: calc(var(--cbs-size-xl) * var(--cbsScaleFactor));
+}
+
+.cbs-rad-2xl {
+	border-radius: calc(var(--cbs-size-2xl) * var(--cbsScaleFactor));
+}
+
+.cbs-rad-3xl {
+	border-radius: calc(var(--cbs-size-3xl) * var(--cbsScaleFactor));
+}
+
+.cbs-rad-4xl {
+	border-radius: calc(var(--cbs-size-4xl) * var(--cbsScaleFactor));
+}
+
+/* Layout and Visual Helpers */
+.cbs-flex {
+	display: flex;
+}
+.cbs-grid {
+	display: grid;
+}
+.cbs-center {
+	justify-content: center;
+	align-items: center;
+}
+.cbs-opc-hide * {
+	opacity: 0;
+}
+.cbs-opc-show * {
+	opacity: 1;
+}
+
+.cbs-cutoff-text {
+	display: -webkit-box;
+	-webkit-line-clamp: var(--cbs-max-lines);
+	line-clamp: var(--cbs-max-lines);
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.cbs-ellipsis {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.cbs-ellipsis-multiline {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-webkit-line-clamp: 2; /* Change this number to how many lines you want */
+	line-clamp: 2;
+}
+
+/* Container Utility */
+.cbs-container {
+	max-width: 100%;
+	margin-inline: auto;
+	padding-inline: calc(var(--cbs-size-base) * var(--cbsScaleFactor));
+}
+
+/* Theme Utility Classes */
+/* Colors */
+.cbs-bg {
+	color: var(--cbs-bg);
+}
+.cbs-text {
+	color: var(--cbs-text);
+}
+.cbs-primary {
+	color: var(--cbs-primary);
+}
+.cbs-border {
+	border-color: var(--cbs-primary);
+}
+.cbs-highlight {
+	color: var(--cbs-highlight);
+}
+.cbs-accent {
+	color: var(--cbs-accent);
+}
+
+/* Box Shaddows */
+
+.cbs-box-Shaddow {
+	box-shadow: 0 0 5px var(--cbs-text);
+}
+.cbs-bg-primary {
+	background-color: var(--cbs-primary);
+}
+.cbs-border-primary {
+	border: 1px solid var(--cbs-primary);
+}
+
+.cbs-bx-shad {
+	box-shadow: 0 0 20px var(--cbs-highlight);
+}
+.cbs-bdr-feature {
+	box-shadow: 0 0 10px var(--cbs-highlight);
+}
+
+/* Text Decorations */
+.cbs-txt-stroke {
+	-webkit-text-stroke: 1px var(--cbs-primary);
+	background-color: transparent;
+	font-weight: 800;
+}
+/* Sample Components */
+.cbs-card {
+	background-color: var(--cbs-bg);
+	color: var(--cbs-text);
+	/* border: 1px solid var(--cbs-primary); */
+	border-radius: 0.5rem;
+	padding: calc(1rem * var(--cbsScaleFactor));
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	font-family: var(--cbs-font);
+	margin: 0;
+}
+
+.cbs-focus-box {
+	background: var(--cbs-bg);
+	opacity: 0.7;
+	box-shadow: 0 0 20px var(--cbs-primary);
+	border-radius: var(--cbs-size-xs);
+}
+
+/* ## -- Buttons -- ## */
+.cbs-button {
+	display: inline-block;
+	/* width: max-content; */
+	background-color: var(--cbs-primary);
+	box-shadow: 0 0 5px var(--cbs-text);
+	color: var(--cbs-text);
+	padding: calc(var(--cbs-size-xs) * var(--cbsScaleFactor));
+	border: none;
+	border-radius: calc(var(--cbs-size-xs) * var(--cbsScaleFactor));
+	cursor: pointer;
+	outline-color: transparent;
+	font-family: var(--cbs-font);
+	font-weight: 700;
+
+	/* margin: 20px; */
+}
+
+.cbs-link {
+	display: inline-block;
+	background-color: var(--cbs-primary);
+	box-shadow: 0 0 5px var(--cbs-text);
+	color: var(--cbs-text);
+	padding: calc(var(--cbs-size-xs) * var(--cbsScaleFactor));
+	border: none;
+	border-radius: calc(var(--cbs-size-xs) * var(--cbsScaleFactor));
+	cursor: pointer;
+	font-family: var(--cbs-font);
+	font-weight: 700;
+	text-decoration: none;
+	width: fit-content;
+}
+
+.cbs-button:hover {
+	background-color: var(--cbs-bg);
+	border: 1px solid var(--cbs-highlight);
+}
+
+.cbs-link:hover {
+	background-color: var(--cbs-bg);
+	border: 1px solid var(--cbs-highlight);
+}
+
+/* ## -- Featured Item -- ## */
+.cbs-featured {
+	box-shadow: 0 0 5px var(--cbs-highlight);
+	background-color: var(--cbs-bg);
+	color: var(--cbs-text);
+}
+
+.cbs-img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.cbs-img img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	/* border-radius: var(--cbs-size-sm); */
+	object-fit: cover;
+}
+
+/* Animations */
+.cbs-scaleMe {
+	animation: cbsScaleMe 3s linear infinite;
+}
+@keyframes cbsScaleMe {
+	0% {
+		transform: Scale(1);
+	}
+	50% {
+		transform: Scale(1.1);
+	}
+	100% {
+		transform: Scale(1);
+	}
+}
+
+/* Icon Toggleling Section */
+/* Hide the checkboxes */
+.cbs-icon-toggle {
+	display: none;
+}
+
+/* Style the labels to act as toggle buttons (optional) */
+.cbs-toggle-label {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	/* Add styling for toggle buttons if needed, e.g., background, border */
+}
+
+/* Hide icons when their corresponding checkbox is unchecked */
+.cbs-icon-toggle:not(:checked) + .toggle-label + i {
+	display: none;
+}
+
+/* Ensure icons are visible when checkbox is checked */
+.cbs-icon-toggle:checked + .toggle-label + i {
+	display: inline-block;
+}
+
+.cbs-icon {
+	color: var(--cbs-text);
+	text-shadow: 0 0 5px var(--cbs-primary);
+}
+.cbs-icon:hover {
+	color: var(--cbs-highlight);
+	text-shadow: 0 0 5px var(--cbs-primary);
+}
+
+.cbs-icon:hover .cbs-icon:hover::after {
+	transform: scale(1.1);
+	transition: 0.3s ease;
+}
+
+/* Show description on icon hover */
+.cbs-icon:hover::after {
+	content: attr(cbs-tooltip);
+	position: absolute;
+	width: 100%;
+	height: max-content;
+	inset: 0 0 0 0;
+	font-size: calc(var(--cbs-size-lg) * var(--cbsScaleFactor));
+	font-family: var(--cbs-font);
+	background-color: var(--cbs-primary);
+	box-shadow: 0 0 10px var(--cbs-highlight);
+	color: var(--cbs-highlight);
+	text-shadow: 0 0 2px var(--cbs-bg);
+	text-align: center;
+	padding: calc(var(--cbs-size-xs) * var(--cbsScaleFactor))
+		calc(var(--cbs-size-xs) * var(--cbsScaleFactor));
+	border: none;
+	border-radius: var(--cbs-size-xs);
+	cursor: pointer;
+
+	transform: scale(1.1) translateY(-100%) translateX(0%);
+
+	overflow: hidden;
+
+	animation: cbsAnimateTooltip 1s linear;
+	z-index: 20;
+}
+
+@keyframes cbsAnimateTooltip {
+	0% {
+		transform: scale(0) translateY(-100%) translateX(0%);
+		opacity: 0;
+	}
+	50% {
+		transform: scale(0.5) translateY(-100%) translateX(0%);
+		opacity: 1;
+	}
+	100% {
+		transform: scale(1.1) translateY(-100%) translateX(0%);
+		/* width: 100%; */
+		opacity: 1;
+	}
+}
+
+/* ###################---START---####################*/
+		/* ############# -- Image Spliting -- ###############*/
+		.cbs-card-pair {
+			transform-style: preserve-3d;
+			width: 100%;
+			height: 100%;
+			position: relative;
+			margin: 0;
+			padding: 0;
+		}
+
+		.cbs-img-split::before {
+			position: absolute;
+			content: "";
+			width: 100%;
+			height: 100%;
+			/* float: left; */
+			backface-visibility: hidden;
+			background-image: var(--pair-bg-image); /* Use parent's variable */
+			background-repeat: no-repeat;
+			background-size: 200% 100%; /* Make the image span twice the width of one half */
+			z-index: 2;
+			transform: scaleX(-1);
+		}
+
+		/* Left side shows the left half of the image */
+		.cbs-img-split-left::before {
+			left: 0;
+			background-position: left center;
+			border-radius: calc(var(--cbs-size-sm) * var(--cbsScaleFactor));
+		}
+
+		/* Right side shows the right half of the image */
+		.cbs-img-split-right::before {
+			right: 0;
+			background-position: right center;
+			border-radius: calc(var(--cbs-size-sm) * var(--cbsScaleFactor));
+		}
+
+		/* ###################---END---####################*/
+		/* ############# -- Image Spliting -- ###############*/
+
+/* =======================================
+   CBS Text Size Adjust Utility
+   Ensures consistent text scaling behavior
+   across browsers and devices
+========================================== */
+
+/* Allow text to scale with user zoom (Recommended default) */
+.cbs-text-adjust-auto {
+	-webkit-text-size-adjust: 100%;
+	-moz-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+}
+
+/* Prevent text resizing by browser (Use with caution) */
+.cbs-text-adjust-none {
+	-webkit-text-size-adjust: none;
+	-moz-text-size-adjust: none;
+	-ms-text-size-adjust: none;
+	text-size-adjust: none;
+}
+
+/*
+NOTES:
+  Icons Uses:
+  -- Elevation: (Mountain) fas fa-mountain (Used to indicate that this is not at Sea Level) 
+  -- Viewpoint: (Binoculars) fa fas fa-binoculars (Used to Describe a Viewpoint of a Place)
+  -- Photo Opportunity: (Camera) fas fa-camera (Used to indicate Photo Opportunities)
+  -- Refreshment Pitstop: (Mug) fas fa-mug-hot (Used to indicate a Pistop to Enjoy a refreshment)
+  -- Alchohol Tasting: (Wine Glass) fas fa-wine-glass (Used to indicate a Alchohol Tasting Opportunity)
+  -- Monument or Statue: (Monument )fa fa-university (Used to indicate a Monument or Statue)
+  -- Beach: (Umbrella Beach ) fas fa-umbrella-beach (Used to indicate a Beach)
+  -- Hiking Trail: (Person Hiking ) fas fa-person-hiking (Used to indicate an opportunity for hiking)
+
+*/

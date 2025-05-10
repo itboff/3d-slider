@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Cube Slider</title>
+		<link rel="stylesheet" href="cbsUtils.css" />
+		<!-- Font Awesome CDN for the motorcycle icon -->
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+			integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+	</head>
+ <Style> /* Document Specific Styling */ 
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		font-family: var(--cbs-font);
+		}
+ </Style>
+	<style>
+		
+		:root {
+			--cbsQty: 3; /*amount of Cards to Show */
+			--cbsSpeed: 10s; /* Default Speed to Rotate */
+			--cbsAspectWidth: 4;
+			--cbsAspectHeight: 3;
+			--cbsCardWidth: calc(
+				var(--cbsPerspective) / var(--cbsQty)
+			); /* Set width for the Slider Cards and Stacked on top of each other */
+			--cbsCardHeight: calc(
+				var(--cbsCardWidth) *
+					(var(--cbsAspectHeight) / var(--cbsAspectWidth))
+			); /* Set width for the Slider Cards and Stacked on top of each other */
+			--cbs-view-angle: -15deg; /* Set Default Angle that the Carousel will display at. */
+		}
+
+		.cbs-banner {
+			width: 100%;
+			min-height: calc(var(--cbsCardHeight) * 3);
+			text-align: center;
+			/* overflow: hidden; */
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: perspective(var(--cbsPerspective)) translateX(-50%)
+				translateY(-50%);
+		}
+
+		.cbs-banner .cbs-slider {
+			position: absolute;
+			width: var(--cbsCardWidth);
+			height: var(--cbsCardHeight);
+			top: 30%;
+			left: calc(50% - var(--cbsCardWidth) / 2);
+			transform-style: preserve-3d;
+
+			/* animation: cbsRotateSlider var(--cbsSpeed) linear infinite; */
+			animation: dynamic-rotate 20s infinite linear;
+			pointer-events: auto;
+			/* border: 1px red solid; */
+			border-radius: var(--cbs-size-xs);
+			z-index: 2;
+		}
+
+		.cbs-banner .cbs-slider:hover {
+			animation-play-state: paused;
+		}
+
+		@keyframes cbsRotateSlider {
+			from {
+				transform: perspective(var(--cbsPerspective))
+					rotateX(var(--cbs-view-angle)) rotateY(0deg);
+				/* Optional Add in an Angle to rotate the X Axis */
+				/* transform: perspective(1000px) rotateX(0deg) rotateY(0deg); */
+			}
+
+			to {
+				transform: perspective(var(--cbsPerspective))
+					rotateX(var(--cbs-view-angle)) rotateY(360deg);
+				/* Optional Add in an Angle to rotate the X Axis */
+				/* transform: perspective(2000px) rotateX(360deg) rotateY(360deg); */
+			}
+		}
+
+		.cbs-banner .cbs-slider .cbs-item {
+			position: absolute;
+			border-radius: var(--cbs-size-xs);
+			pointer-events: auto;
+			inset: 0 0 0 0;
+			transform-style: preserve-3d;
+			transform: rotateY(
+					calc(
+						(var(--cbsPosition) - 1) * (360 / var(--cbsQty)) * 1deg
+					)
+				)
+				translateZ(calc(var(--cbsPerspective) / 2));
+		}
+
+		.cbs-banner .cbs-slider .cbs-item:before {
+			content: attr(cbs-item-title);
+			display: block;
+			position: absolute;
+			bottom: 5%;
+			right: 0;
+			color: var(--cbs-text);
+			background: var(--cbs-bg);
+			opacity: 0.7;
+			padding: var(--cbs-size-xs);
+			width: max-content;
+			white-space: normal; /* allows wrapping */
+			word-wrap: break-word; /* breaks long words if needed */
+			overflow-wrap: break-word; /* modern alternative */
+			font-size: var(--cbs-size-base);
+			font-weight: 700;
+			box-shadow: 0 0 20px var(--cbs-primary);
+			border-radius: var(--cbs-size-xs);
+			animation: cbsPulseHead 2s ease-in-out infinite; /* Has Custom Animation Timing */
+			box-sizing: border-box;
+		}
+
+		@keyframes cbsPulseHead {
+			0% {
+				transform: translateZ(10px);
+			}
+			50% {
+				transform: translateZ(20px);
+			}
+			100% {
+				transform: translateZ(10px);
+			}
+		}
+
+		.cbs-banner .cbs-slider .cbs-item::after {
+			content: attr(cbs-item-desc);
+			display: block; /* or inline-block if needed */
+			position: absolute;
+			bottom: 10%;
+			left: 0;
+			color: var(--cbs-text);
+			background: var(--cbs-bg);
+			opacity: 0.7;
+			padding: var(--cbs-size-xs);
+			width: max-content;
+			white-space: normal; /* allows wrapping */
+			word-wrap: break-word; /* breaks long words if needed */
+			overflow-wrap: break-word; /* modern alternative */
+			font-size: var(--cbs-size-base);
+			font-weight: 700;
+			box-shadow: 0 0 20px var(--cbs-primary);
+			border-radius: var(--cbs-size-xs);
+			transform: translateZ(-25px);
+			animation: cbsPulseDesc var(--cbsSpeed) ease-in-out infinite;
+			box-sizing: border-box;
+		}
+
+		@keyframes cbsPulseDesc {
+			0% {
+				transform: translateZ(-25px) rotateY(180deg);
+			}
+			50% {
+				transform: translateZ(-200px) rotateY(180deg) scale(0.5);
+			}
+			100% {
+				transform: translateZ(-25px) rotateY(180deg);
+			}
+		}
+
+		.cbs-banner .cbs-slider .cbs-item:hover {
+			/* transform: rotateX(45deg) scale(0.5); */
+			/* opacity: 0; */
+		}
+
+		.cbs-banner .cbs-header {
+			position: absolute;
+			display: flex;
+			left: 50%;
+			top: 50%;
+			transform: translateX(-50%) translateY(-50%);
+			width: min(var(--cbsPerspective), 100vw);
+			height: 100%;
+			justify-content: flex-start;
+			align-items: center;
+			flex-direction: column;
+			box-sizing: border-box;
+			/* background: red; */
+			z-index: 1;
+		}
+
+		.cbs-banner .cbs-header h2 {
+			top: 0px;
+			line-height: 1em;
+			position: relative;
+			top: 0px;
+			/* z-index: 2000 !important; */
+		}
+
+		.cbs-banner .cbs-header-info {
+			position: absolute;
+			bottom: 0;
+		}
+
+		.cbs-banner .cbs-tour-list {
+			/* text-align: right; */
+			width: var(--cbsCardWidth);
+			position: absolute;
+			top: 0;
+			left: 0;
+			box-sizing: border-box;
+			display: flex;
+			flex-direction: column;
+			z-index: 3;
+		}
+
+		.cbs-model-viewer {
+			position: relative;
+			/* top: -10px; */
+			/* right: -200px; */
+			z-index: 3;
+			width: 100%;
+			height: 100%;
+			/* border: 1px rgb(47, 0, 255) solid; */
+			/* background-color: rgb(105, 105, 116); */
+		}
+
+		.cbs-banner .cbs-trike3D {
+			position: absolute;
+			/* border: 5px green; */
+			/* background-color: blue; */
+			left: 50%;
+			top: 35%;
+			transform: translateX(-50%) translateY(-50%);
+			width: var(--cbsCardWidth);
+			height: var(--cbsCardHeight);
+			z-index: 3;
+		}
+
+		/* ####### START -- Inner Cards -- ####### */
+
+		.cbs-card {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			transform: translateZ(0px);
+			/* background-color: aquamarine; */
+			transform-style: preserve-3d;
+			transition: transform 2s;
+		}
+
+		.cbs-card:hover {
+			transform: translateZ(100px) rotateY(180deg)
+				rotateX(var(--cbs-view-angle)) scale(2);
+		}
+
+		.cbs-face {
+			position: absolute;
+			width: 60%;
+			height: 60%;
+			/* backface-visibility: hidden; */
+			/* background-color: #f90; */
+			transform-style: preserve-3d;
+			transform: translateZ(10px);
+			top: 0;
+			left: 0;
+			border-radius: 12px;
+			overflow: hidden;
+		}
+
+		/* FRONT */
+		.cbs-face-front {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			/* backface-visibility: hidden; Hide back face during flip */
+			/* background-color: #f90; */
+			transform-style: preserve-3d; /* Ensure 3D context for children */
+			transform: translateZ(1px); /* Position the card in 3D space */
+			border-radius: var(--cbs-size-xs);
+			overflow: hidden;
+		}
+
+		.cbs-card-front-info {
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			backface-visibility: hidden;
+			transform: translateZ(20px); /* Behind the card */
+			background-color: var(--cbs-primary);
+			color: var(--cbs-text);
+			font-weight: 700;
+		}
+
+		.cbs-card-back-info {
+			display: inline-block;
+			position: absolute;
+			top: 5%;
+			left: 5%;
+			backface-visibility: hidden;
+			transform: translateZ(-20px) rotateY(180deg); /* In front of the card */
+		}
+
+		/* BACK */
+		.cbs-face-back {
+			position: absolute;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			backface-visibility: hidden; /* Hide back face during flip */
+			/* background-color: #f90; */
+			transform-style: preserve-3d; /* Ensure 3D context for children */
+			transform: rotateY(180deg) translateZ(1px); /* Position the card in 3D space */
+			border-radius: 12px;
+			/* overflow: hidden; */
+			color: var(--cbs-text);
+			background-color: var(--cbs-bg);
+			font-weight: var(--cbs-weight);
+			padding: var(--cbs-size-xs);
+		}
+
+		.cbs-face-back-heading {
+			z-index: 5; /* Show at TOP of card */
+			transform: perspective(3D);
+			transform: translateZ(var(--cbs-size-base));
+		}
+		.cbs-face-back-icons {
+			display: flex;
+			flex-direction: row;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+
+			backface-visibility: hidden;
+			color: var(--cbs-text);
+			text-shadow: 0 0 20px var(--cbs-primary);
+			transform: perspective(3D);
+			transform: translateZ(var(--cbs-size-sm));
+			z-index: 3;
+		}
+
+		.cbs-tour-link {
+			position: absolute;
+			display: block;
+			bottom: -15%;
+			right: -10%;
+			z-index: 4;
+		}
+
+		.cbs-tour-time {
+			position: absolute;
+			display: block;
+			top: 5%;
+			left: -10%;
+			z-index: 2;
+			color: var(--cbs-text);
+			background: var(--cbs-bg);
+			opacity: 0.7;
+			box-shadow: 0 0 20px var(--cbs-primary);
+			border-radius: var(--cbs-size-xs);
+			transform: perspective(3D);
+			transform: translateZ(var(--cbs-size-sm));
+		}
+
+		.cbs-card-border {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			transform: translateZ(0px); /* Behind the card */
+			background: transparent;
+			color: var(--cbs-text);
+			animation: cbsPulseBorder 1s linear infinite;
+		}
+
+		@keyframes cbsPulseBorder {
+			0% {
+				transform: translateZ(0px);
+			}
+			50% {
+				transform: translateZ(2px);
+			}
+			100% {
+				transform: translateZ(0px);
+			}
+		}
+
+		/* ####### END -- Inner Cards -- ####### */
+	</style>
+	<body>
+		<div class="theme-toggle">
+			<!-- Used to Toggel Theme-->
+			<button
+				class="cbs-button"
+				onclick="document.documentElement.setAttribute('data-theme', 'light')"
+			>
+				Light
+			</button>
+			<button
+				class="cbs-button"
+				onclick="document.documentElement.setAttribute('data-theme', 'dark')"
+			>
+				Dark
+			</button>
+			<button
+				class="cbs-button"
+				onclick="document.documentElement.setAttribute('data-theme', 'neon')"
+			>
+				Neon
+			</button>
+			<button
+				class="cbs-button"
+				onclick="document.documentElement.setAttribute('data-theme', 'retro')"
+			>
+				Retro
+			</button>
+		</div>
+		<div class="cbs-banner">
+			<div class="cbs-header cbs-text">
+				<h2
+					class="cbs-text-5xl cbs-pad-sm cbs-txt-stroke"
+					cbs-item-title="Nuns Valley Tours"
+				>
+					Nuns Valley Tours
+				</h2>
+				<p class="cbs-header-info cbs-text-md">
+					Private Guided tours of Nuns Valley Madeira like no other.
+					Adventure Trikes offers a variety of customized private
+					tours to explore the wonders of Nuns valley, also known as
+					Curral das Freiras. Popular Trike Adventure tours Include.
+					Eira do Serrado Viewpoint, Curral das Freiras and North West
+					Island Tour
+				</p>
+			</div>
+			<div class="cbs-slider" style="--cbsQty: 5">
+				<!-- Face 1 NEW-->
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 1"
+					cbs-item-title="Breathtaking views"
+					cbs-item-desc="Elevation of 1095 meters"
+				>
+					<div class="cbs-card">
+						<div
+							class="cbs-card-front-info cbs-text-lg cbs-pad-xs cbs-rad-sm cbs-bx-shad"
+						>
+							Eira do Serrado Viewpoint
+						</div>
+						<div
+							class="cbs-card-border cbs-bx-shad cbs-rad-xs"
+						></div>
+						<!-- Border Animation for Cards-->
+						<div class="cbs-card-back-info"></div>
+						<div class="cbs-face-front">
+							<img
+								src="https://adventuretrikes.com/wp-content/uploads/2025/03/Eira-do-Serrado-on-tour-with-adventure-trikes-scaled.webp"
+								alt="View from Eira do Serrado Viewpoint of Nuns Valley on Tour"
+								class="cbs-img cbs-rad-xs"
+							/>
+						</div>
+						<div class="cbs-face-back cbs-pad-lg">
+							<div class="cbs-face-back-heading">
+								<h3
+									class="cbs-text-xl cbs-scaleMe cbs-highlight"
+								>
+									Eira do Serrado
+								</h3>
+							</div>
+							<p class="cbs-text-md">
+								Stunning viewpoint overlooking the picturesque
+								Nuns’ Valley (Curral das Freiras) on the
+								Portuguese island of Madeira.
+							</p>
+							<div class="cbs-face-back-icons">
+								<!-- Hidden checkboxes to control each icon's visibility -->
+								<input
+									type="checkbox"
+									id="mountain-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="mountain-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-mountain cbs-text-lg cbs-pad-xs"
+									data-description="Mountain"
+									cbs-tooltip="Mountain Views at Elevated High"
+								></i>
+
+								<input
+									type="checkbox"
+									id="binoculars-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="binoculars-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-binoculars cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Amazing Viewpoint's to Capture Memories"
+								></i>
+
+								<input
+									type="checkbox"
+									id="camera-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="camera-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-camera cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Plenty of Photo Opportunities"
+								></i>
+
+								<input
+									type="checkbox"
+									id="mug-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="mug-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-mug-hot cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Refreshment Stops Along the way"
+								></i>
+
+								<input
+									type="checkbox"
+									id="wine-glass-toggle"
+									class="cbs-icon-toggle"
+								/><!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="wine-glass-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-wine-glass cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Wine - Rum Tasting Opportunity"
+								></i>
+
+								<input
+									type="checkbox"
+									id="university-toggle"
+									class="cbs-icon-toggle"
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="university-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fa fa-university cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Visit a Historical Landmark or Statue"
+								></i>
+
+								<input
+									type="checkbox"
+									id="umbrella-toggle"
+									class="cbs-icon-toggle"
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="umbrella-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-umbrella-beach cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Beach Stop as part of Tour"
+								></i>
+
+								<input
+									type="checkbox"
+									id="hiking-toggle"
+									class="cbs-icon-toggle"
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="hiking-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-hiking cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Hiking Opportunity Available"
+								></i>
+							</div>
+							<div class="cbs-tour-time cbs-text-base cbs-button">
+								<p>2 Hour</p>
+								<i class="fas fa-clock"></i>
+							</div>
+							<div class="cbs-tour-link">
+								<a href="#" class="cbs-link cbs-text-base"
+									>View Tour</a
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Face 2 NEW -->
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 2"
+					cbs-item-title="360 Panoramic Views"
+					cbs-item-desc="One of a Kind Experience"
+				>
+					<div class="cbs-card">
+						<div
+							class="cbs-card-front-info cbs-text-lg cbs-pad-xs cbs-rad-sm cbs-bx-shad"
+						>
+							Nuns Valley Scenic
+						</div>
+						<div
+							class="cbs-card-border cbs-bx-shad cbs-rad-xs"
+						></div>
+						<!-- Border Animation for Cards-->
+						<div class="cbs-card-back-info"></div>
+						<div class="cbs-face-front">
+							<img
+								src="https://adventuretrikes.com/wp-content/uploads/2025/03/Adventurers-inside-Nuns-valley-with-Adventure-Trikes.webp"
+								alt="View inside of Nuns Valley on Tour with Adventure Trikes"
+								class="cbs-img cbs-rad-xs"
+							/>
+						</div>
+						<div class="cbs-face-back cbs-pad-lg">
+							<div class="cbs-face-back-heading">
+								<h3
+									class="cbs-text-xl cbs-scaleMe cbs-highlight"
+								>
+									Nuns Valley Scenic
+								</h3>
+							</div>
+							<p class="cbs-text-md">
+								3 hour private guided tour of Madeira Island
+								starting at Nuns Valley view point.
+							</p>
+							<div class="cbs-face-back-icons">
+								<!-- Hidden checkboxes to control each icon's visibility -->
+								<input
+									type="checkbox"
+									id="mountain-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="mountain-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-mountain cbs-text-lg cbs-pad-xs"
+									data-description="Mountain"
+									cbs-tooltip="Mountain Views at Elevated High"
+								></i>
+
+								<input
+									type="checkbox"
+									id="binoculars-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="binoculars-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-binoculars cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Amazing Viewpoint's to Capture Memories"
+								></i>
+
+								<input
+									type="checkbox"
+									id="camera-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="camera-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-camera cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Plenty of Photo Opportunities"
+								></i>
+
+								<input
+									type="checkbox"
+									id="mug-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="mug-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-mug-hot cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Refreshment Stops Along the way"
+								></i>
+
+								<input
+									type="checkbox"
+									id="wine-glass-toggle"
+									class="cbs-icon-toggle"
+								/><!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="wine-glass-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-wine-glass cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Wine - Rum Tasting Opportunity"
+								></i>
+
+								<input
+									type="checkbox"
+									id="university-toggle"
+									class="cbs-icon-toggle"
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="university-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fa fa-university cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Visit a Historical Landmark or Statue"
+								></i>
+
+								<input
+									type="checkbox"
+									id="umbrella-toggle"
+									class="cbs-icon-toggle"
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="umbrella-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-umbrella-beach cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Beach Stop as part of Tour"
+								></i>
+
+								<input
+									type="checkbox"
+									id="hiking-toggle"
+									class="cbs-icon-toggle"
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="hiking-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-hiking cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Hiking Opportunity Available"
+								></i>
+							</div>
+							<div class="cbs-tour-time cbs-text-base cbs-button">
+								<p>3 Hour</p>
+								<i class="fas fa-clock"></i>
+							</div>
+							<div class="cbs-tour-link">
+								<a href="#" class="cbs-link cbs-text-base"
+									>View Tour</a
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Face 3 NEW -->
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 3"
+					cbs-item-title="Private Tour Guide"
+					cbs-item-desc="Bucket List Must Do"
+				>
+					<div class="cbs-card">
+						<div
+							class="cbs-card-front-info cbs-text-lg cbs-pad-xs cbs-rad-sm cbs-bx-shad"
+						>
+							North West
+						</div>
+						<div
+							class="cbs-card-border cbs-bx-shad cbs-rad-xs"
+						></div>
+						<!-- Border Animation for Cards-->
+						<div class="cbs-card-back-info"></div>
+						<div class="cbs-face-front">
+							<img
+								src="https://adventuretrikes.com/wp-content/uploads/2025/03/Sexial-Beach-tour-of-Madeira-Island-with-Adventure-Trikes-scaled.webp"
+								alt="Sexial Beach On a North West Tour"
+								class="cbs-img cbs-rad-xs"
+							/>
+						</div>
+						<div class="cbs-face-back cbs-pad-lg">
+							<div class="cbs-face-back-heading">
+								<h3
+									class="cbs-text-xl cbs-scaleMe cbs-highlight"
+								>
+									North West
+								</h3>
+							</div>
+							<p class="cbs-text-md">
+								Feeling Adventurous? Starting at NUNS VALLEY,
+								experience our private guided tour of the North
+								West like no other.
+							</p>
+							<div class="cbs-face-back-icons">
+								<!-- Hidden checkboxes to control each icon's visibility -->
+								<input
+									type="checkbox"
+									id="mountain-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="mountain-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-mountain cbs-text-lg cbs-pad-xs"
+									data-description="Mountain"
+									cbs-tooltip="Mountain Views at Elevated High"
+								></i>
+
+								<input
+									type="checkbox"
+									id="binoculars-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="binoculars-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-binoculars cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Amazing Viewpoint's to Capture Memories"
+								></i>
+
+								<input
+									type="checkbox"
+									id="camera-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="camera-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-camera cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Plenty of Photo Opportunities"
+								></i>
+
+								<input
+									type="checkbox"
+									id="mug-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="mug-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-mug-hot cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Refreshment Stops Along the way"
+								></i>
+
+								<input
+									type="checkbox"
+									id="wine-glass-toggle"
+									class="cbs-icon-toggle"
+									
+								/><!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="wine-glass-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-wine-glass cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Wine - Rum Tasting Opportunity"
+								></i>
+
+								<input
+									type="checkbox"
+									id="university-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="university-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fa fa-university cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Visit a Historical Landmark or Statue"
+								></i>
+
+								<input
+									type="checkbox"
+									id="umbrella-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="umbrella-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-umbrella-beach cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Beach Stop as part of Tour"
+								></i>
+
+								<input
+									type="checkbox"
+									id="hiking-toggle"
+									class="cbs-icon-toggle"
+									
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="hiking-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-hiking cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Hiking Opportunity Available"
+								></i>
+							</div>
+							<div class="cbs-tour-time cbs-text-base cbs-button">
+								<p>6 Hour</p>
+								<i class="fas fa-clock"></i>
+							</div>
+							<div class="cbs-tour-link">
+								<a href="#" class="cbs-link cbs-text-base"
+									>View Tour</a
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Face 4 NEW -->
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 4"
+					cbs-item-title="See All of Madeira"
+					cbs-item-desc="Your Adventure Awaits"
+				>
+					<div class="cbs-card">
+						<div
+							class="cbs-card-front-info cbs-text-lg cbs-pad-xs cbs-rad-sm cbs-bx-shad"
+						>
+							More Destinations
+						</div>
+						<div
+							class="cbs-card-border cbs-bx-shad cbs-rad-xs"
+						></div>
+						<!-- Border Animation for Cards-->
+						<div class="cbs-card-back-info"></div>
+						<div class="cbs-face-front">
+							<img
+								src="https://adventuretrikes.com/wp-content/uploads/2025/03/Cabo-Girao-View-Point-with-adventure-trikes.webp"
+								alt="All of Madeira"
+								class="cbs-img cbs-rad-xs"
+							/>
+						</div>
+						<div class="cbs-face-back cbs-pad-lg">
+							<div class="cbs-face-back-heading">
+								<h3
+									class="cbs-text-xl cbs-scaleMe cbs-highlight"
+								>
+									More Destinations
+								</h3>
+							</div>
+							<p class="cbs-text-md">
+								Discover all the beauty of Madeira.
+								<ul><li>Camara de Lobos</li><li>Sexial Beach</li><li>Ribeira Brava</li><li>Machico</li></ul>
+							</p>
+							<div class="cbs-face-back-icons">
+								<!-- Hidden checkboxes to control each icon's visibility -->
+								<input
+									type="checkbox"
+									id="mountain-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="mountain-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-mountain cbs-text-lg cbs-pad-xs"
+									data-description="Mountain"
+									cbs-tooltip="Mountain Views at Elevated High"
+								></i>
+
+								<input
+									type="checkbox"
+									id="binoculars-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="binoculars-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-binoculars cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Amazing Viewpoint's to Capture Memories"
+								></i>
+
+								<input
+									type="checkbox"
+									id="camera-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="camera-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-camera cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Plenty of Photo Opportunities"
+								></i>
+
+								<input
+									type="checkbox"
+									id="mug-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="mug-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-mug-hot cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Refreshment Stops Along the way"
+								></i>
+
+								<input
+									type="checkbox"
+									id="wine-glass-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/><!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="wine-glass-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-wine-glass cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Wine - Rum Tasting Opportunity"
+								></i>
+
+								<input
+									type="checkbox"
+									id="university-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="university-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fa fa-university cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Visit a Historical Landmark or Statue"
+								></i>
+
+								<input
+									type="checkbox"
+									id="umbrella-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="umbrella-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-umbrella-beach cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Beach Stop as part of Tour"
+								></i>
+
+								<input
+									type="checkbox"
+									id="hiking-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="hiking-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-hiking cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Hiking Opportunity Available"
+								></i>
+							</div>
+							<div class="cbs-tour-time cbs-text-base cbs-button">
+								<p>2 - 6 Hrs</p>
+								<i class="fas fa-clock"></i>
+							</div>
+							<div class="cbs-tour-link">
+								<a href="#" class="cbs-link cbs-text-base"
+									>View Tour</a
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Face 5 NEW -->
+				<div
+					class="cbs-item"
+					style="--cbsPosition: 5"
+					cbs-item-title="Top things to Do"
+					cbs-item-desc="Let's Ride"
+				>
+					<div class="cbs-card">
+						<div
+							class="cbs-card-front-info cbs-text-lg cbs-pad-xs cbs-rad-sm cbs-bx-shad"
+						>
+							Popular Attractions
+						</div>
+						<div
+							class="cbs-card-border cbs-bx-shad cbs-rad-xs"
+						></div>
+						<!-- Border Animation for Cards-->
+						<div class="cbs-card-back-info"></div>
+						<div class="cbs-face-front">
+							<img
+								src="https://adventuretrikes.com/wp-content/uploads/2023/10/BackgroundPicDetail-1.jpg"
+								alt="Best attractions Madeira"
+								class="cbs-img cbs-rad-xs"
+							/>
+						</div>
+						<div class="cbs-face-back cbs-pad-lg">
+							<div class="cbs-face-back-heading">
+								<h3
+									class="cbs-text-xl cbs-scaleMe cbs-highlight"
+								>
+								Popular Attractions
+								</h3>
+							</div>
+							<p class="cbs-text-md">
+								Top Attractions Madeira.
+								<ul><li>Cristo Rei</li><li>Cabo Girao</li><li>Churchill Statue</li><li>Wine Tasting</li></ul>
+							</p>
+							<div class="cbs-face-back-icons">
+								<!-- Hidden checkboxes to control each icon's visibility -->
+								<input
+									type="checkbox"
+									id="mountain-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="mountain-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-mountain cbs-text-lg cbs-pad-xs"
+									data-description="Mountain"
+									cbs-tooltip="Mountain Views at Elevated High"
+								></i>
+
+								<input
+									type="checkbox"
+									id="binoculars-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="binoculars-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-binoculars cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Amazing Viewpoint's to Capture Memories"
+								></i>
+
+								<input
+									type="checkbox"
+									id="camera-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="camera-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-camera cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Plenty of Photo Opportunities"
+								></i>
+
+								<input
+									type="checkbox"
+									id="mug-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="mug-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-mug-hot cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Refreshment Stops Along the way"
+								></i>
+
+								<input
+									type="checkbox"
+									id="wine-glass-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/><!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="wine-glass-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-wine-glass cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Wine - Rum Tasting Opportunity"
+								></i>
+
+								<input
+									type="checkbox"
+									id="university-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="university-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fa fa-university cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Visit a Historical Landmark or Statue"
+								></i>
+
+								<input
+									type="checkbox"
+									id="umbrella-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="umbrella-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-umbrella-beach cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Beach Stop as part of Tour"
+								></i>
+
+								<input
+									type="checkbox"
+									id="hiking-toggle"
+									class="cbs-icon-toggle"
+									checked
+								/>
+								<!--Remove Checked if you want to hide the Icon-->
+								<label
+									for="hiking-toggle"
+									class="toggle-label"
+								></label>
+								<i
+									class="fas fa-hiking cbs-text-lg cbs-pad-xs"
+									cbs-tooltip="Hiking Opportunity Available"
+								></i>
+							</div>
+							<div class="cbs-tour-time cbs-text-base cbs-button">
+								<p>2 - 6 Hrs</p>
+								<i class="fas fa-clock"></i>
+							</div>
+							<div class="cbs-tour-link">
+								<a href="#" class="cbs-link cbs-text-base"
+									>View Tour</a
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				
+				<!-- Face 3 -->
+				<!-- <div
+				class="cbs-item"
+				style="--cbsPosition: 3"
+				cbs-item-title="Pico do Arieiro"
+				cbs-item-desc="Above the clouds on Madeira's peaks"
+			>
+				<div class="cbs-card">
+					<div class="cbs-face cbs-face-front">
+						<img
+							src="../cube-3d/left.jpg"
+							alt="Pico do Arieiro"
+						/>
+					</div>
+					<div class="cbs-face cbs-face-back">
+						<div class="cbs-back-content">
+							<h3>Pico do Arieiro</h3>
+							<p>Above the clouds on Madeira's peaks</p>
+							<button>Explore More</button>
+						</div>
+					</div>
+				</div>
+			</div> -->
+
+				<!-- Face 4 -->
+				<!-- <div
+				class="cbs-item"
+				style="--cbsPosition: 4"
+				cbs-item-title="Seixal Natural Pools"
+				cbs-item-desc="Crystal waters and volcanic rock"
+			>
+				<div class="cbs-card">
+					<div class="cbs-face cbs-face-front">
+						<img
+							src="../cube-3d/right.jpg"
+							alt="Seixal Natural Pools"
+						/>
+					</div>
+					<div class="cbs-face cbs-face-back">
+						<div class="cbs-back-content">
+							<h3>Seixal Natural Pools</h3>
+							<p>
+								Crystal waters and volcanic rock formations
+							</p>
+							<button>Explore More</button>
+						</div>
+					</div>
+				</div>
+			</div> -->
+
+				<!-- Face 5 -->
+				<!-- <div
+				class="cbs-item"
+				style="--cbsPosition: 5"
+				cbs-item-title="Santana Houses"
+				cbs-item-desc="Traditional A-frame thatched homes"
+			>
+				<div class="cbs-card">
+					<div class="cbs-face cbs-face-front">
+						<img
+							src="../cube-3d/front.jpg"
+							alt="Santana Houses"
+						/>
+					</div>
+					<div class="cbs-face cbs-face-back">
+						<div class="cbs-back-content">
+							<h3>Santana Houses</h3>
+							<p>
+								Traditional A-frame thatched homes unique to
+								Madeira
+							</p>
+							<button>Explore More</button>
+						</div>
+					</div>
+				</div>
+			</div> -->
+
+				<!-- Face 6 -->
+				<!-- <div
+				class="cbs-item"
+				style="--cbsPosition: 6"
+				cbs-item-title="Sunset in Porto Moniz"
+				cbs-item-desc="Peaceful Atlantic horizon"
+			>
+				<div class="cbs-card">
+					<div class="cbs-face cbs-face-front">
+						<img
+							src="../cube-3d/back.jpg"
+							alt="Sunset in Porto Moniz"
+						/>
+					</div>
+					<div class="cbs-face cbs-face-back">
+						<div class="cbs-back-content">
+							<h3>Sunset in Porto Moniz</h3>
+							<p>
+								Peaceful Atlantic horizon from the northwest
+								coast
+							</p>
+							<button>Explore More</button>
+						</div>
+					</div>
+				</div>
+			</div> -->
+				<!-- Card 7 -->
+				<!-- <div
+				class="cbs-item"
+				style="--cbsPosition: 7"
+				cbs-item-title="Sunset in Porto Moniz"
+				cbs-item-desc="Peaceful Atlantic horizon"
+			>
+				<div class="cbs-card">
+					<div class="cbs-face cbs-face-front">
+						<img
+							src="../cube-3d/back.jpg"
+							alt="Sunset in Porto Moniz"
+						/>
+					</div>
+					<div class="cbs-face cbs-face-back">
+						<div class="cbs-back-content">
+							<h3>Sunset in Porto Moniz</h3>
+							<p>
+								Peaceful Atlantic horizon from the northwest
+								coast
+							</p>
+							<button>Explore More</button>
+						</div>
+					</div>
+				</div>
+			</div> -->
+				<!-- Card 8 -->
+				<!-- <div class="cbs-item" style="--cbsPosition: 8">
+				<div class="cbs-card-wrapper">
+					<div class="cbs-card">
+						<div class="cbs-face cbs-face-front">
+							<img src="../cube-3d/right.jpg" alt="Image 1" />
+						</div>
+						<div class="cbs-face cbs-face-back">
+							<div class="cbs-back-content">
+								<h3>Tour 8</h3>
+								<p>Description of Tour</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div> -->
+				<!-- Card 9 -->
+				<!-- <div class="cbs-item" style="--cbsPosition: 9">
+				<div class="cbs-card-wrapper">
+					<div class="cbs-card">
+						<div class="cbs-face cbs-face-front">
+							<img src="../cube-3d/right.jpg" alt="Image 1" />
+						</div>
+						<div class="cbs-face cbs-face-back">
+							<div class="cbs-back-content">
+								<h3>Tour 9</h3>
+								<p>Description of Tour</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div> -->
+				<!-- Card 10 -->
+				<!-- <div class="cbs-item" style="--cbsPosition: 10">
+				<div class="cbs-card-wrapper">
+					<div class="cbs-card">
+						<div class="cbs-face cbs-face-front">
+							<img src="../cube-3d/right.jpg" alt="Image 1" />
+						</div>
+						<div class="cbs-face cbs-face-back">
+							<div class="cbs-back-content">
+								<h3>Tour 10</h3>
+								<p>Description of Tour</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div> -->
+			</div>
+
+			<div class="cbs-tour-list cbs-pad-sm">
+				<h3 class="cbs-text-xl cbs-mg-sm">Nuns Valley Options</h3>
+				<p class="cbs-text-md cbs-text cbs-mg-sm">Selection of Tours</p>
+				<a href="#" class="cbs-link cbs-mg-sm"
+					>Eira do Serrado Viewpoint</a
+				>
+				<a href="#" class="cbs-link cbs-mg-sm">Nuns Valley Scenic</a>
+				<a href="#" class="cbs-link cbs-mg-sm">North West Tour</a>
+				<a href="#" class="cbs-link cbs-mg-sm cbs-featured"
+					>More Destinations</a
+				>
+				<a href="#" class="cbs-link cbs-mg-sm cbs-featured"
+					>Popular Attractions</a
+				>
+			</div>
+
+			<div class="cbs-promo-card cbs-mg-sm cbs-pad-sm">
+				<h3 class="cbs-text-xl">Favourite</h3>
+
+				<a href="#" class="cbs-link cbs-mg-sm cbs-text-md"
+					>Eira do Serrado Viewpoint</a
+				>
+
+				<img
+					src="https://adventuretrikes.com/wp-content/uploads/2025/03/Eira-do-Serrado-on-tour-with-adventure-trikes-scaled.webp"
+					alt="Featured Tour"
+					class="cbs-img cbs-pad-xs cbs-rad-base"
+				/>
+			</div>
+
+			<div class="cbs-trike3D">
+				<script
+					type="module"
+					src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
+				></script>
+
+				<!-- Use it like any other HTML element -->
+
+				<model-viewer
+					src="red-trike.glb"
+					alt="A 3D model"
+					auto-rotate
+					loading="lazy"
+					class="cbs-model-viewer"
+				>
+					<div slot="poster">
+						Trike Model Not Supported in Browser.
+					</div></model-viewer
+				>
+			</div>
+		</div>
+		<script>
+			// Script to Genrate Keyframes and Positioning Pause Points for Slider Animation
+			function createAnimation(numPositions = 0) {
+				// Remove old keyframes
+				const existing = document.getElementById("dynamic-keyframes");
+				if (existing) existing.remove();
+
+				const totalDuration = 20; // Total animation duration in seconds
+				const keyframes = [
+					`@keyframes dynamic-rotate { 
+				0% { 
+				  transform: rotateX(var(--cbs-view-angle)) rotateY(0deg); 
+				}`,
+				];
+
+				for (let i = 1; i <= numPositions; i++) {
+					const rotateEnd = (i / numPositions) * 100 - 10;
+					const pauseEnd = (i / numPositions) * 100;
+					const yRotation = (360 / numPositions) * i;
+
+					keyframes.push(`
+				  ${rotateEnd}% { 
+					transform: rotateX(var(--cbs-view-angle)) rotateY(${yRotation}deg);
+				  }
+				  ${pauseEnd}% { 
+					transform:  rotateX(var(--cbs-view-angle)) rotateY(${yRotation}deg);
+				  }
+				`);
+				}
+
+				keyframes.push(`100% { 
+				transform: rotateX(var(--cbs-view-angle)) rotateY(360deg); 
+			  }}`);
+
+				// Inject styles
+				const style = document.createElement("style");
+				style.id = "dynamic-keyframes";
+				style.textContent = keyframes.join("");
+				document.head.appendChild(style);
+
+				// Apply animation
+				document.querySelector(
+					".element"
+				).style.animation = `dynamic-rotate ${totalDuration}s infinite linear`;
+			}
+
+			// Initialize with x amount of positions and fixed X rotation
+			createAnimation(5); //Enter The amount of stop points or cards in the carousel of the slider
+		</script>
+	</body>
+</html>

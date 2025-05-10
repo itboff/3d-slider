@@ -1,0 +1,233 @@
+/* ======================================
+   🎨 THEME & VARIABLE SETUP
+====================================== */
+:root {
+	--cbs-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+
+	/* Theme Colors */
+	--cbs-primary: #4ac0f9;
+	--cbs-secondary: #dee1e5;
+	--cbs-text: #000;
+	--cbs-bg: #fff;
+	--cbs-highlight: yellow;
+	--cbs-border: #888;
+
+	/* Sizing Units */
+	--cbs-size-sm: 0.5rem;
+	--cbs-size-md: 1rem;
+	--cbs-size-lg: 2rem;
+	--cbsScaleFactor: 1;
+
+	/* Max Width */
+	--cbsTxtChar: 70ch;
+
+	/* Animation */
+	--cbs-duration: 0.3s;
+	--cbs-ease: ease-in-out;
+}
+
+/* ======================================
+   🔄 RESET
+====================================== */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	font-family: var(--cbs-font);
+	color: var(--cbs-text);
+	background-color: var(--cbs-bg);
+	line-height: 1.5;
+	font-size: 100%;
+}
+
+/* ======================================
+   🧩 UTILITY CLASSES
+====================================== */
+
+/* Layout */
+.cbs-container {
+	max-width: 70ch;
+	margin: 0 auto;
+	padding: var(--cbs-size-md);
+}
+
+.cbs-section {
+	padding: var(--cbs-size-lg) var(--cbs-size-md);
+}
+.cbs-section p,
+.cbs-section ul,
+.cbs-section li {
+	max-width: var(--cbsTxtChar);
+}
+
+/* Padding */
+.cbs-pad {
+	padding: var(--cbs-size-md);
+}
+.cbs-pad-lg {
+	padding: var(--cbs-size-lg);
+}
+
+/* Flexbox & Alignment */
+.cbs-flex {
+	display: flex;
+}
+.cbs-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.cbs-justify-between {
+	justify-content: space-between;
+}
+
+/* Text */
+.cbs-text-left {
+	text-align: left;
+}
+.cbs-text-center {
+	text-align: center;
+}
+.cbs-bold {
+	font-weight: bold;
+}
+
+/* Colors */
+.cbs-primary {
+	color: var(--cbs-primary);
+}
+.cbs-secondary {
+	color: var(--cbs-secondary);
+}
+.cbs-highlight {
+	background-color: var(--cbs-highlight);
+}
+.cbs-border {
+	border: 1px solid var(--cbs-border);
+}
+.cbs-bg {
+	background-color: var(--cbs-bg);
+}
+.cbs-text {
+	color: var(--cbs-text);
+}
+
+/* Spacing */
+.cbs-mt {
+	margin-top: var(--cbs-size-md);
+}
+.cbs-mb {
+	margin-bottom: var(--cbs-size-md);
+}
+.cbs-ml {
+	margin-left: var(--cbs-size-md);
+}
+.cbs-mr {
+	margin-right: var(--cbs-size-md);
+}
+.cbs-gap {
+	gap: var(--cbs-size-md);
+}
+
+/* Typography */
+.cbs-small {
+	font-size: 0.875rem;
+}
+.cbs-large {
+	font-size: 1.25rem;
+}
+.cbs-uppercase {
+	text-transform: uppercase;
+}
+
+/* Width & Layout */
+.cbs-full {
+	width: 100%;
+}
+.cbs-inline {
+	display: inline;
+}
+
+/* Scrollbar Styling (Optional) */
+html {
+	scrollbar-color: var(--cbs-primary) var(--cbs-bg);
+	scrollbar-width: thin;
+}
+
+/* ======================================
+   🎛️ COMPONENT HELPERS
+====================================== */
+.cbs-button {
+	padding: 0.5rem 1rem;
+	background-color: var(--cbs-primary);
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color var(--cbs-duration) var(--cbs-ease);
+}
+.cbs-button:hover {
+	background-color: #359ecc;
+}
+
+.cbs-card {
+	border: 1px solid var(--cbs-border);
+	padding: var(--cbs-size-md);
+	border-radius: 8px;
+	background-color: var(--cbs-bg);
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Shadow Utilities */
+.cbs-shadow-sm {
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.cbs-shadow-md {
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ======================================
+   🌀 ANIMATIONS
+====================================== */
+.cbs-anim-fadein {
+	animation: cbsFadeIn var(--cbs-duration) var(--cbs-ease);
+}
+
+@keyframes cbsFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* ======================================
+   🌙 DARK MODE SUPPORT
+====================================== */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--cbs-bg: #111;
+		--cbs-text: #eee;
+		--cbs-primary: #4ac0f9;
+		--cbs-secondary: #ccc;
+		--cbs-border: #555;
+	}
+}
+
+/* ======================================
+   🦮 ACCESSIBILITY
+====================================== */
+*:focus-visible {
+	outline: 2px solid var(--cbs-highlight);
+	outline-offset: 2px;
+}

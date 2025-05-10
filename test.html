@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Dynamic Perspective Based on Grid Area</title>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				height: 100vh;
+				display: grid;
+				place-items: center;
+				background: #111;
+				overflow: hidden;
+			}
+
+			.grid-container {
+				display: grid;
+				grid-template-columns: 1fr 2fr 1fr;
+				grid-template-rows: 1fr 2fr 1fr;
+				gap: 20px;
+				width: 80vw;
+				height: 80vh;
+				background: #333;
+			}
+
+			.grid-item {
+				background: #222;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: relative;
+			}
+
+			#tracked-area {
+				background: #444;
+				grid-column: 2;
+				grid-row: 2;
+				overflow: hidden;
+				position: relative;
+			}
+
+			.three-d-container {
+				width: 100%;
+				height: 100%;
+				transform-style: preserve-3d;
+				perspective: 800px; /* Initial, will be updated */
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.cube {
+				width: 100px;
+				height: 100px;
+				background: linear-gradient(45deg, #0ff, #f0f);
+				transform: rotateX(45deg) rotateY(45deg);
+				animation: spin 5s linear infinite;
+				transform-style: preserve-3d;
+			}
+
+			@keyframes spin {
+				from {
+					transform: rotateX(0deg) rotateY(0deg);
+				}
+				to {
+					transform: rotateX(360deg) rotateY(360deg);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="grid-container">
+			<div class="grid-item"></div>
+			<div class="grid-item"></div>
+			<div class="grid-item"></div>
+			<div class="grid-item"></div>
+
+			<!-- The tracked area -->
+			<div class="grid-item" id="tracked-area">
+				<div class="three-d-container">
+					<div class="cube"></div>
+				</div>
+			</div>
+
+			<div class="grid-item"></div>
+			<div class="grid-item"></div>
+			<div class="grid-item"></div>
+			<div class="grid-item"></div>
+		</div>
+
+		<script>
+			const gridArea = document.getElementById("tracked-area");
+			const threeDContainer =
+				gridArea.querySelector(".three-d-container");
+
+			function updatePerspective() {
+				const rect = gridArea.getBoundingClientRect();
+				const size = Math.max(rect.width, rect.height);
+				const perspectiveValue = size * 2; // Adjust multiplier to tweak strength
+
+				threeDContainer.style.perspective = `${perspectiveValue}px`;
+
+				console.log(`Updated perspective: ${perspectiveValue}px`);
+			}
+
+			// Run once initially
+			updatePerspective();
+
+			// Update on window resize
+			window.addEventListener("resize", updatePerspective);
+
+			// Live updates if the grid area resizes
+			const resizeObserver = new ResizeObserver(updatePerspective);
+			resizeObserver.observe(gridArea);
+		</script>
+	</body>
+</html>
